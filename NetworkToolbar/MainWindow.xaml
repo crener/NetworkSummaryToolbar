@@ -1,0 +1,21 @@
+﻿<Window x:Class="NetworkToolbar.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NetworkToolbar"
+        xmlns:vm="clr-namespace:NetworkToolbar.VM"
+        xmlns:converter="clr-namespace:NetworkToolbar.Converter"
+        xmlns:views="clr-namespace:NetworkToolbar.Views"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance vm:NetworkStats, IsDesignTimeCreatable=False}"
+        Title="MainWindow" Height="74" Width="250">
+    <Window.Resources>
+        <converter:ByteConverter x:Key="ByteString" />
+    </Window.Resources>
+    
+    <views:NetworkSummary
+        DownloadText="{Binding Download, Converter={StaticResource ByteString}}"
+        UploadText="{Binding Upload, Converter={StaticResource ByteString}}"
+        NetworkFrames="{Binding Frames}" />
+</Window>
