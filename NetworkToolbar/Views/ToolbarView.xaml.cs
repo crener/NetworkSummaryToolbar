@@ -3,9 +3,9 @@ using NetworkToolbar.VM;
 
 namespace NetworkToolbar.Views
 {
-    public partial class DeskBand : UserControl
+    public partial class ToolbarView : UserControl
     {
-        public DeskBand()
+        public ToolbarView()
         {
             DataContext = new NetworkStats();
             InitializeComponent();

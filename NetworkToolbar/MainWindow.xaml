@@ -9,5 +9,5 @@
         xmlns:views="clr-namespace:NetworkToolbar.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="74" Width="250" MinHeight="28">
-    <views:DeskBand/>
+    <views:ToolbarView/>
 </Window>
