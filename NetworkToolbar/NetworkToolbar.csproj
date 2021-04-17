@@ -56,6 +56,9 @@
         <Compile Include="Utility\DelegateCommand.cs" />
         <Compile Include="Utility\DropOutStack.cs" />
         <Compile Include="Utility\PerfCounter.cs" />
+        <Compile Include="Views\DeskBand.xaml.cs">
+          <DependentUpon>DeskBand.xaml</DependentUpon>
+        </Compile>
         <Compile Include="Views\NetworkSummary.cs" />
         <Compile Include="VM\Container\NetworkFrame.cs" />
         <Compile Include="VM\Container\Settings.cs" />
@@ -72,6 +75,7 @@
             <DependentUpon>MainWindow.xaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
+        <Page Include="Views\DeskBand.xaml" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Properties\AssemblyInfo.cs">

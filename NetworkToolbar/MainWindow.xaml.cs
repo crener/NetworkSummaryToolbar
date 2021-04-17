@@ -11,7 +11,6 @@ namespace NetworkToolbar
     {
         public MainWindow()
         {
-            DataContext = new NetworkStats();
             InitializeComponent();
         }
     }

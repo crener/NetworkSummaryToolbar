@@ -1,0 +1,46 @@
+<UserControl x:Class="NetworkToolbar.Views.DeskBand"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:NetworkToolbar.Views"
+             xmlns:converter="clr-namespace:NetworkToolbar.Converter"
+             xmlns:networkToolbar="clr-namespace:NetworkToolbar"
+             xmlns:vm="clr-namespace:NetworkToolbar.VM"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:NetworkStats, IsDesignTimeCreatable=False}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converter:ByteConverter x:Key="ByteString" />
+
+        <networkToolbar:RenderingMode x:Key="DirectRender">Direct</networkToolbar:RenderingMode>
+        <networkToolbar:RenderingMode x:Key="ThickRender">Thick</networkToolbar:RenderingMode>
+        <networkToolbar:RenderingMode x:Key="AverageRender">Average</networkToolbar:RenderingMode>
+    </UserControl.Resources>
+    
+    <local:NetworkSummary
+        DownloadText="{Binding Download, Converter={StaticResource ByteString}}"
+        UploadText="{Binding Upload, Converter={StaticResource ByteString}}"
+        NetworkFrames="{Binding Frames}"
+        RenderMode="{Binding Display}"
+        DesiredNetworkBufferSize="{Binding FrameDataQty, Mode=OneWayToSource}">
+        <local:NetworkSummary.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Display Mode" IsCheckable="False">
+                    <MenuItem Header="Direct"
+                              IsChecked="{Binding Display, Converter={converter:EqualityConverter ExpectedObject={StaticResource DirectRender}}}"
+                              Command="{Binding ChangeRenderMode}"
+                              CommandParameter="{StaticResource DirectRender}" />
+                    <MenuItem Header="Thick"
+                              IsChecked="{Binding Display, Converter={converter:EqualityConverter ExpectedObject={StaticResource ThickRender}}}"
+                              Command="{Binding ChangeRenderMode}"
+                              CommandParameter="{StaticResource ThickRender}" />
+                    <MenuItem Header="Average"
+                              IsChecked="{Binding Display, Converter={converter:EqualityConverter ExpectedObject={StaticResource AverageRender}}}"
+                              Command="{Binding ChangeRenderMode}"
+                              CommandParameter="{StaticResource AverageRender}" />
+                </MenuItem>
+            </ContextMenu>
+        </local:NetworkSummary.ContextMenu>
+    </local:NetworkSummary>
+</UserControl>
