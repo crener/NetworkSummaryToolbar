@@ -1,4 +1,6 @@
-﻿using NetworkToolbar.VM;
+﻿using System.Windows;
+using System.Windows.Data;
+using NetworkToolbar.VM;
 
 namespace NetworkToolbar
 {

@@ -51,10 +51,15 @@
             <SubType>Designer</SubType>
         </ApplicationDefinition>
         <Compile Include="Converter\ByteConverter.cs" />
+        <Compile Include="Converter\EqualityConverter.cs" />
+        <Compile Include="Enums.cs" />
+        <Compile Include="Utility\DelegateCommand.cs" />
+        <Compile Include="Utility\DropOutStack.cs" />
+        <Compile Include="Utility\PerfCounter.cs" />
         <Compile Include="Views\NetworkSummary.cs" />
-        <Compile Include="VM\NetworkFrame.cs" />
+        <Compile Include="VM\Container\NetworkFrame.cs" />
+        <Compile Include="VM\Container\Settings.cs" />
         <Compile Include="VM\NetworkStats.cs" />
-        <Compile Include="VM\PerfCounter.cs" />
         <Page Include="MainWindow.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>

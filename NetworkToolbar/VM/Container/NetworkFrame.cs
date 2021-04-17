@@ -1,4 +1,4 @@
-namespace NetworkToolbar.VM
+namespace NetworkToolbar.VM.Container
 {
     public struct NetworkFrame
     {

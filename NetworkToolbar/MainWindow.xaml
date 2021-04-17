@@ -9,13 +9,38 @@
         xmlns:views="clr-namespace:NetworkToolbar.Views"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance vm:NetworkStats, IsDesignTimeCreatable=False}"
-        Title="MainWindow" Height="74" Width="250">
+        Title="MainWindow" Height="74" Width="250" MinHeight="28">
     <Window.Resources>
         <converter:ByteConverter x:Key="ByteString" />
+
+        <local:RenderingMode x:Key="DirectRender">Direct</local:RenderingMode>
+        <local:RenderingMode x:Key="ThickRender">Thick</local:RenderingMode>
+        <local:RenderingMode x:Key="AverageRender">Average</local:RenderingMode>
     </Window.Resources>
-    
+
     <views:NetworkSummary
         DownloadText="{Binding Download, Converter={StaticResource ByteString}}"
         UploadText="{Binding Upload, Converter={StaticResource ByteString}}"
-        NetworkFrames="{Binding Frames}" />
+        NetworkFrames="{Binding Frames}"
+        RenderMode="{Binding Display}"
+        DesiredNetworkBufferSize="{Binding FrameDataQty, Mode=OneWayToSource}">
+        <views:NetworkSummary.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Display Mode" IsCheckable="False">
+                    <MenuItem Header="Direct"
+                              IsChecked="{Binding Display, Converter={converter:EqualityConverter ExpectedObject={StaticResource DirectRender}}}"
+                              Command="{Binding ChangeRenderMode}"
+                              CommandParameter="{StaticResource DirectRender}" />
+                    <MenuItem Header="Thick"
+                              IsChecked="{Binding Display, Converter={converter:EqualityConverter ExpectedObject={StaticResource ThickRender}}}"
+                              Command="{Binding ChangeRenderMode}"
+                              CommandParameter="{StaticResource ThickRender}" />
+                    <MenuItem Header="Average"
+                              IsChecked="{Binding Display, Converter={converter:EqualityConverter ExpectedObject={StaticResource AverageRender}}}"
+                              Command="{Binding ChangeRenderMode}"
+                              CommandParameter="{StaticResource AverageRender}" />
+                </MenuItem>
+            </ContextMenu>
+        </views:NetworkSummary.ContextMenu>
+    </views:NetworkSummary>
 </Window>

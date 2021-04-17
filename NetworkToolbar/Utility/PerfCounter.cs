@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Linq;
 
-namespace NetworkToolbar.VM
+namespace NetworkToolbar.Utility
 {
     public class PerfCounter
     {
