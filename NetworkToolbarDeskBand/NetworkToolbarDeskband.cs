@@ -7,7 +7,7 @@ using NetworkToolbar.Views;
 
 namespace NetworkToolbarDeskBand
 {
-    [ComVisible(true), Guid("AA0888B3-6CCC-497C-9CE6-9211FEEDFC10"), CSDeskBandRegistration(Name = "Network Summary")]
+    [ComVisible(true), Guid("AA0888B3-6CCC-497C-9CE6-9218FEEDFC10"), CSDeskBandRegistration(Name = "Network Summary")]
     public class Deskband : CSDeskBandWpf
     {
         public Deskband()
@@ -16,7 +16,7 @@ namespace NetworkToolbarDeskBand
             //Options.ContextMenuItems = ContextMenuItems;
         }
 
-        protected override UIElement UIElement => new ToolbarView();
+        protected override UIElement UIElement { get; } = new ToolbarView();
 
         /*private List<DeskBandMenuItem> ContextMenuItems
         {

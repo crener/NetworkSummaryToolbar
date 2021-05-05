@@ -11,8 +11,12 @@ namespace NetworkToolbar
         /// </summary>
         Thick,
         /// <summary>
-        /// Take the average network traffic over a few seconds and render that
+        /// Take the average network traffic over a few seconds
         /// </summary>
-        Average
+        Average,
+        /// <summary>
+        /// Take the moving average network traffic over a few seconds
+        /// </summary>
+        AverageMoving,
     }
 }

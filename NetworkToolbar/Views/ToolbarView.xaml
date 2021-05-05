@@ -16,6 +16,7 @@
         <networkToolbar:RenderingMode x:Key="DirectRender">Direct</networkToolbar:RenderingMode>
         <networkToolbar:RenderingMode x:Key="ThickRender">Thick</networkToolbar:RenderingMode>
         <networkToolbar:RenderingMode x:Key="AverageRender">Average</networkToolbar:RenderingMode>
+        <networkToolbar:RenderingMode x:Key="MovingRender">AverageMoving</networkToolbar:RenderingMode>
     </UserControl.Resources>
     
     <local:NetworkSummary
@@ -39,6 +40,10 @@
                               IsChecked="{Binding Display, Converter={converter:EqualityConverter ExpectedObject={StaticResource AverageRender}}}"
                               Command="{Binding ChangeRenderMode}"
                               CommandParameter="{StaticResource AverageRender}" />
+                    <MenuItem Header="Average (Moving)"
+                              IsChecked="{Binding Display, Converter={converter:EqualityConverter ExpectedObject={StaticResource MovingRender}}}"
+                              Command="{Binding ChangeRenderMode}"
+                              CommandParameter="{StaticResource MovingRender}" />
                 </MenuItem>
             </ContextMenu>
         </local:NetworkSummary.ContextMenu>

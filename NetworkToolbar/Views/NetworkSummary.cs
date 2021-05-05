@@ -151,6 +151,7 @@ namespace NetworkToolbar.Views
  
             const int maxedAveragingRange = 3; 
             const int rollingAveragingRange = 2;
+            const int movingAveragingRange = 5;
             if(RenderMode == RenderingMode.Average && up.Length > rollingAveragingRange)
             {
                 int i = 0;
@@ -164,6 +165,24 @@ namespace NetworkToolbar.Views
                     downStack.Push(frame.Download);
                     up[i] = Math.Max(frame.Upload, upStack.Average());
                     down[i] = Math.Max(frame.Download, downStack.Average());
+
+                    range = Math.Max(up[i], Math.Max(down[i], range));
+                    i++;
+                }
+            }
+            else if(RenderMode == RenderingMode.AverageMoving && up.Length > movingAveragingRange)
+            {
+                int i = 0;
+                DropOutStack<double> upStack = new DropOutStack<double>(movingAveragingRange);
+                DropOutStack<double> downStack = new DropOutStack<double>(movingAveragingRange);
+                foreach (NetworkFrame frame in frames)
+                {
+                    if(i > up.Length) break;
+
+                    upStack.Push(frame.Upload);
+                    downStack.Push(frame.Download);
+                    up[i] = Math.Max(frame.Upload, CalculateMovingAverage(upStack));
+                    down[i] = Math.Max(frame.Download, CalculateMovingAverage(downStack));
 
                     range = Math.Max(up[i], Math.Max(down[i], range));
                     i++;
@@ -202,7 +221,7 @@ namespace NetworkToolbar.Views
                 }
             }
 
-            for (int i = 0; i < up.Length; i++)
+            for (int i = 0; i < up.Length-1; i++)
             {
                 double barRange = down[i] / range;
                 drawingContext.DrawLine(m_downloadPen, new Point(x, yMin), new Point(x, yMin - (yRange * barRange)));
@@ -214,6 +233,22 @@ namespace NetworkToolbar.Views
             }
 
             RenderOptions.SetEdgeMode(this, EdgeMode.Aliased);
+        }
+
+        private double CalculateMovingAverage(DropOutStack<double> stack)
+        {
+            int weight = stack.Capacity;
+            double total = 0;
+            int size = 0;
+
+            foreach (double item in stack)
+            {
+                total += item * weight;
+                size += weight;
+                weight--;
+            }
+
+            return total / size;
         }
 
         /// <summary>
