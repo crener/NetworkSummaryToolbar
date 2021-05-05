@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.TextFormatting;
 using System.Xml.Serialization;
 using NetworkToolbar.Utility;
 using NetworkToolbar.VM;
@@ -15,8 +16,11 @@ using NetworkToolbar.VM.Container;
 
 namespace NetworkToolbar.Views
 {
-    public partial class NetworkSummary : FrameworkElement
+    public class NetworkSummary : FrameworkElement
     {
+        public const double AbsoluteMinWidth = 60; 
+        public const double AbsoluteMinHeight = 28; 
+        
         public IReadOnlyList<NetworkFrame> NetworkFrames
         {
             get { return (IReadOnlyList<NetworkFrame>) GetValue(NetworkFramesProperty); }
@@ -114,6 +118,8 @@ namespace NetworkToolbar.Views
 
         protected override void OnRender(DrawingContext drawingContext)
         {
+            if(ActualWidth < AbsoluteMinWidth || ActualHeight < AbsoluteMinHeight) return;
+            
             // background
             RenderOptions.SetEdgeMode(this, EdgeMode.Unspecified);
             Rect rect = new Rect(1, 1, ActualWidth - 1, ActualHeight - 1);
@@ -196,7 +202,7 @@ namespace NetworkToolbar.Views
                 }
             }
 
-            for (int i = up.Length - 1; i >= 0; i--)
+            for (int i = 0; i < up.Length; i++)
             {
                 double barRange = down[i] / range;
                 drawingContext.DrawLine(m_downloadPen, new Point(x, yMin), new Point(x, yMin - (yRange * barRange)));

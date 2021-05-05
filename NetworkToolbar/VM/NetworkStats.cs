@@ -88,15 +88,15 @@ namespace NetworkToolbar.VM
                 Upload = sent.getData();
                 Download = got.getData();
 
-                m_frames.AddLast(new NetworkFrame()
+                m_frames.AddFirst(new NetworkFrame()
                 {
                     Upload = Upload,
                     Download = Download
                 });
 
-                if(m_frames.Count > FrameDataQty)
+                while (m_frames.Count > FrameDataQty)
                 {
-                    m_frames.RemoveFirst();
+                    m_frames.RemoveLast();
                 }
 
                 NotifyPropertyChanged(nameof(Frames));

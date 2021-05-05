@@ -12,7 +12,7 @@ namespace NetworkToolbarDeskBand
     {
         public Deskband()
         {
-            Options.MinHorizontalSize = new DeskBandSize(60, 28);
+            Options.MinHorizontalSize = new DeskBandSize((int)NetworkSummary.AbsoluteMinWidth, (int)NetworkSummary.AbsoluteMinHeight);
             //Options.ContextMenuItems = ContextMenuItems;
         }
 
