@@ -59,6 +59,7 @@ namespace NetworkToolbar.VM
 
         
         private const int c_maxFrameData = 120;
+        private const int c_bufferSize = 60;
         
         private double m_upload;
         private double m_download;
@@ -94,7 +95,7 @@ namespace NetworkToolbar.VM
                     Download = Download
                 });
 
-                while (m_frames.Count > FrameDataQty)
+                while (m_frames.Count > FrameDataQty + c_bufferSize)
                 {
                     m_frames.RemoveLast();
                 }

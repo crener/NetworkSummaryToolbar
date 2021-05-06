@@ -71,7 +71,10 @@ namespace NetworkToolbar.Views
             "DesiredNetworkBufferSize", typeof(int), typeof(NetworkSummary), new PropertyMetadata(default(int)));
 
         
-        private const double EmFontSize = 10.5;
+        private const double c_emFontSize = 10.5;
+        const int c_maxedAveragingRange = 3; 
+        const int c_rollingAveragingRange = 2;
+        const int c_movingAveragingRange = 5;
         
         private Brush m_boarderBrush;
         private Pen m_boarderPen;
@@ -92,7 +95,7 @@ namespace NetworkToolbar.Views
         {
             //m_font = SystemFonts.MenuFontFamily.GetTypefaces().First();
             m_font = new Typeface("Segoe UI");
-            m_textHeight = new FormattedText("P", CultureInfo.InvariantCulture, FlowDirection.LeftToRight, m_font, EmFontSize, Brushes.Black).Height;
+            m_textHeight = new FormattedText("P", CultureInfo.InvariantCulture, FlowDirection.LeftToRight, m_font, c_emFontSize, Brushes.Black).Height;
 
             m_boarderBrush = new SolidColorBrush(Color.FromRgb(166, 166, 166));
             m_boarderPen = new Pen(m_boarderBrush, 1);
@@ -149,14 +152,11 @@ namespace NetworkToolbar.Views
             double[] down = new double[Math.Min(x, frames.Length)];
             double range = 0;
  
-            const int maxedAveragingRange = 3; 
-            const int rollingAveragingRange = 2;
-            const int movingAveragingRange = 5;
-            if(RenderMode == RenderingMode.Average && up.Length > rollingAveragingRange)
+            if(RenderMode == RenderingMode.Average && up.Length > c_rollingAveragingRange)
             {
                 int i = 0;
-                DropOutStack<double> upStack = new DropOutStack<double>(rollingAveragingRange);
-                DropOutStack<double> downStack = new DropOutStack<double>(rollingAveragingRange);
+                DropOutStack<double> upStack = new DropOutStack<double>(c_rollingAveragingRange);
+                DropOutStack<double> downStack = new DropOutStack<double>(c_rollingAveragingRange);
                 foreach (NetworkFrame frame in frames)
                 {
                     if(i > up.Length) break;
@@ -170,11 +170,11 @@ namespace NetworkToolbar.Views
                     i++;
                 }
             }
-            else if(RenderMode == RenderingMode.AverageMoving && up.Length > movingAveragingRange)
+            else if(RenderMode == RenderingMode.AverageMoving && up.Length > c_movingAveragingRange)
             {
                 int i = 0;
-                DropOutStack<double> upStack = new DropOutStack<double>(movingAveragingRange);
-                DropOutStack<double> downStack = new DropOutStack<double>(movingAveragingRange);
+                DropOutStack<double> upStack = new DropOutStack<double>(c_movingAveragingRange);
+                DropOutStack<double> downStack = new DropOutStack<double>(c_movingAveragingRange);
                 foreach (NetworkFrame frame in frames)
                 {
                     if(i > up.Length) break;
@@ -188,11 +188,30 @@ namespace NetworkToolbar.Views
                     i++;
                 }
             }
-            else if(RenderMode == RenderingMode.Thick && up.Length > maxedAveragingRange)
+            else if(RenderMode == RenderingMode.Smart && up.Length > c_movingAveragingRange && up.Length > c_rollingAveragingRange)
+            {   // Combine both average and moving average
+                int i = 0;
+                DropOutStack<double> upStack = new DropOutStack<double>(Math.Max(c_movingAveragingRange, c_rollingAveragingRange));
+                DropOutStack<double> downStack = new DropOutStack<double>(Math.Max(c_movingAveragingRange, c_rollingAveragingRange));
+                foreach (NetworkFrame frame in frames)
+                {
+                    if(i > up.Length) break;
+
+                    upStack.Push(frame.Upload);
+                    downStack.Push(frame.Download);
+                    
+                    up[i] = Math.Max(CalculateRollingAverage(upStack), CalculateMovingAverage(upStack));
+                    down[i] = Math.Max(CalculateRollingAverage(downStack), CalculateMovingAverage(downStack));
+
+                    range = Math.Max(up[i], Math.Max(down[i], range));
+                    i++;
+                }
+            }
+            else if(RenderMode == RenderingMode.Thick && up.Length > c_maxedAveragingRange)
             {
                 int i = 0;
-                DropOutStack<double> upStack = new DropOutStack<double>(maxedAveragingRange);
-                DropOutStack<double> downStack = new DropOutStack<double>(maxedAveragingRange);
+                DropOutStack<double> upStack = new DropOutStack<double>(c_maxedAveragingRange);
+                DropOutStack<double> downStack = new DropOutStack<double>(c_maxedAveragingRange);
                 foreach (NetworkFrame frame in frames)
                 {
                     if(i >= up.Length) break;
@@ -235,6 +254,17 @@ namespace NetworkToolbar.Views
             RenderOptions.SetEdgeMode(this, EdgeMode.Aliased);
         }
 
+        private double CalculateRollingAverage(DropOutStack<double> stack)
+        {
+            double total = 0;
+            for (int i = 0; i < c_rollingAveragingRange; i++)
+            {
+                total += stack[i];
+            }
+
+            return total / c_rollingAveragingRange;
+        }
+
         private double CalculateMovingAverage(DropOutStack<double> stack)
         {
             int weight = stack.Capacity;
@@ -257,9 +287,9 @@ namespace NetworkToolbar.Views
         private void DrawTextSummary(DrawingContext drawingContext)
         {
             FormattedText dText = new FormattedText(
-                $"D {DownloadText}", CultureInfo.InvariantCulture, FlowDirection.LeftToRight, m_font, EmFontSize, m_downloadBrush);
+                $"D {DownloadText}", CultureInfo.InvariantCulture, FlowDirection.LeftToRight, m_font, c_emFontSize, m_downloadBrush);
             FormattedText uText = new FormattedText(
-                $"U {UploadText}", CultureInfo.InvariantCulture, FlowDirection.LeftToRight, m_font, EmFontSize, m_uploadBrush);
+                $"U {UploadText}", CultureInfo.InvariantCulture, FlowDirection.LeftToRight, m_font, c_emFontSize, m_uploadBrush);
 
             Rect textSize = new Rect(1, 1, Math.Max(dText.Width, uText.Width) + 3, dText.Height + uText.Height - 4);
 

@@ -20,6 +20,11 @@ namespace NetworkToolbar.Utility
             m_items = new T[capacity];
         }
 
+        public T this [int key]
+        {
+            get => m_items[(key + m_top) % m_items.Length];
+        }
+
         public void Push(T item)
         {
             m_items[m_top] = item;

@@ -17,6 +17,7 @@
         <networkToolbar:RenderingMode x:Key="ThickRender">Thick</networkToolbar:RenderingMode>
         <networkToolbar:RenderingMode x:Key="AverageRender">Average</networkToolbar:RenderingMode>
         <networkToolbar:RenderingMode x:Key="MovingRender">AverageMoving</networkToolbar:RenderingMode>
+        <networkToolbar:RenderingMode x:Key="SmartRender">Smart</networkToolbar:RenderingMode>
     </UserControl.Resources>
     
     <local:NetworkSummary
@@ -28,6 +29,10 @@
         <local:NetworkSummary.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Display Mode" IsCheckable="False">
+                    <MenuItem Header="Smart"
+                              IsChecked="{Binding Display, Converter={converter:EqualityConverter ExpectedObject={StaticResource SmartRender}}}"
+                              Command="{Binding ChangeRenderMode}"
+                              CommandParameter="{StaticResource SmartRender}" />
                     <MenuItem Header="Direct"
                               IsChecked="{Binding Display, Converter={converter:EqualityConverter ExpectedObject={StaticResource DirectRender}}}"
                               Command="{Binding ChangeRenderMode}"

@@ -3,6 +3,10 @@ namespace NetworkToolbar
     public enum RenderingMode
     {
         /// <summary>
+        /// Use multiple averaging methods to produce a good looking graph
+        /// </summary>
+        Smart,
+        /// <summary>
         /// Direct data rendered into the control
         /// </summary>
         Direct,
