@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 
 namespace NetworkToolbar.Utility
 {
@@ -20,6 +21,11 @@ namespace NetworkToolbar.Utility
             bool exists = catExists && PerformanceCounterCategory.CounterExists(name, Category);
             if(!exists)
             {
+                #if DEBUG
+                if(!catExists) MessageBox.Show($"Failed to find Category {Category}");
+                else MessageBox.Show($"Failed to find Counter {name}");
+                #endif
+                
                 return;
             }
             
@@ -29,7 +35,7 @@ namespace NetworkToolbar.Utility
             m_counter = new PerformanceCounter[names.Length];
             for (int i = 0; i < names.Length; i++)
             {
-                m_counter[i] = new PerformanceCounter(Category, Name, names[i]);
+                m_counter[i] = new PerformanceCounter(Category, Name, names[i], true);
             }
         }
 

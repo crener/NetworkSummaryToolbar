@@ -8,6 +8,7 @@
              xmlns:networkToolbar="clr-namespace:NetworkToolbar"
              xmlns:vm="clr-namespace:NetworkToolbar.VM"
              mc:Ignorable="d"
+             MinWidth="{x:Static local:NetworkSummary.AbsoluteMinWidth}"
              d:DataContext="{d:DesignInstance vm:NetworkStats, IsDesignTimeCreatable=False}"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>

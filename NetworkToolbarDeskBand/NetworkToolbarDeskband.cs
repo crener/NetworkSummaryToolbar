@@ -1,19 +1,29 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Windows;
 using CSDeskBand;
-using CSDeskBand.ContextMenu;
 using NetworkToolbar.Views;
 
 namespace NetworkToolbarDeskBand
 {
-    [ComVisible(true), Guid("AA0888B3-6CCC-497C-9CE6-9218FEEDFC10"), CSDeskBandRegistration(Name = "Network Summary")]
+    [ComVisible(true), Guid("413318c9-a7e2-4511-b394-9c409022ba4d"), CSDeskBandRegistration(Name = "Network Summary", ShowDeskBand = true)]
     public class Deskband : CSDeskBandWpf
     {
         public Deskband()
         {
             Options.MinHorizontalSize = new DeskBandSize((int)NetworkSummary.AbsoluteMinWidth, (int)NetworkSummary.AbsoluteMinHeight);
             //Options.ContextMenuItems = ContextMenuItems;
+
+            const double padding = 3;
+            _rootVisual.Margin = new Thickness(0, padding, 0, padding);
+
+            Options.PropertyChanged += (sender, args) =>
+            {
+                if(args.PropertyName == nameof(CSDeskBandOptions.VerticalSize))
+                {
+                    _rootVisual.Width = Options.VerticalSize.Width;
+                    _rootVisual.Height = Options.VerticalSize.Height - (padding * 2);
+                }
+            };
         }
 
         protected override UIElement UIElement { get; } = new ToolbarView();

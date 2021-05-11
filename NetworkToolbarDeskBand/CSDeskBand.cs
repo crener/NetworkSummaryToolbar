@@ -1009,7 +1009,7 @@ namespace CSDeskBand
     public abstract class CSDeskBandWpf : ICSDeskBand, IDeskBandProvider
     {
         private readonly CSDeskBandImpl _impl;
-        private readonly AdornerDecorator _rootVisual;
+        protected readonly AdornerDecorator _rootVisual;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CSDeskBandWpf"/> class.
@@ -1026,6 +1026,7 @@ namespace CSDeskBand
             };
 
             HwndSource = new HwndSource(hwndSourceParameters);
+            HwndSource.SizeToContent = SizeToContent.Manual;
             _rootVisual = new AdornerDecorator();
             HwndSource.RootVisual = _rootVisual;
             HwndSource.CompositionTarget.BackgroundColor = Colors.Transparent;
@@ -1149,6 +1150,7 @@ namespace CSDeskBand
         /// </summary>
         protected virtual void DeskbandOnClosed()
         {
+            Application.Current.Shutdown();
         }
 
         public int GetWindow(out IntPtr phwnd)

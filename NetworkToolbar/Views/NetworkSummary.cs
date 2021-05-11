@@ -2,25 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Remoting.Channels;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.TextFormatting;
-using System.Xml.Serialization;
 using NetworkToolbar.Utility;
-using NetworkToolbar.VM;
 using NetworkToolbar.VM.Container;
 
 namespace NetworkToolbar.Views
 {
     public class NetworkSummary : FrameworkElement
     {
-        public const double AbsoluteMinWidth = 60; 
-        public const double AbsoluteMinHeight = 28; 
-        
+        public const double AbsoluteMinWidth = 60;
+        public const double AbsoluteMinHeight = 27;
+
         public IReadOnlyList<NetworkFrame> NetworkFrames
         {
             get { return (IReadOnlyList<NetworkFrame>) GetValue(NetworkFramesProperty); }
@@ -59,7 +52,7 @@ namespace NetworkToolbar.Views
             set { SetValue(RenderModeProperty, value); }
         }
         public static readonly DependencyProperty RenderModeProperty = DependencyProperty.Register(
-            nameof(RenderMode), typeof(RenderingMode), typeof(NetworkSummary), 
+            nameof(RenderMode), typeof(RenderingMode), typeof(NetworkSummary),
             new PropertyMetadata(RenderingMode.Average));
 
         public int DesiredNetworkBufferSize
@@ -70,12 +63,12 @@ namespace NetworkToolbar.Views
         public static readonly DependencyProperty DesiredNetworkBufferSizeProperty = DependencyProperty.Register(
             "DesiredNetworkBufferSize", typeof(int), typeof(NetworkSummary), new PropertyMetadata(default(int)));
 
-        
+
         private const double c_emFontSize = 10.5;
-        const int c_maxedAveragingRange = 3; 
+        const int c_maxedAveragingRange = 3;
         const int c_rollingAveragingRange = 2;
         const int c_movingAveragingRange = 5;
-        
+
         private Brush m_boarderBrush;
         private Pen m_boarderPen;
         private Brush m_textBackgroundBrush;
@@ -95,7 +88,8 @@ namespace NetworkToolbar.Views
         {
             //m_font = SystemFonts.MenuFontFamily.GetTypefaces().First();
             m_font = new Typeface("Segoe UI");
-            m_textHeight = new FormattedText("P", CultureInfo.InvariantCulture, FlowDirection.LeftToRight, m_font, c_emFontSize, Brushes.Black).Height;
+            m_textHeight = new FormattedText("P", CultureInfo.InvariantCulture, FlowDirection.LeftToRight, m_font, c_emFontSize, Brushes.Black)
+                .Height;
 
             m_boarderBrush = new SolidColorBrush(Color.FromRgb(166, 166, 166));
             m_boarderPen = new Pen(m_boarderBrush, 1);
@@ -121,8 +115,14 @@ namespace NetworkToolbar.Views
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if(ActualWidth < AbsoluteMinWidth || ActualHeight < AbsoluteMinHeight) return;
-            
+            if(ActualWidth < AbsoluteMinWidth || ActualHeight < AbsoluteMinHeight)
+            {
+                FormattedText dText = new FormattedText($"To Small", CultureInfo.InvariantCulture, FlowDirection.LeftToRight, m_font, c_emFontSize,
+                    m_downloadBrush);
+                drawingContext.DrawText(dText, new Point(0, 0));
+                return;
+            }
+
             // background
             RenderOptions.SetEdgeMode(this, EdgeMode.Unspecified);
             Rect rect = new Rect(1, 1, ActualWidth - 1, ActualHeight - 1);
@@ -143,7 +143,7 @@ namespace NetworkToolbar.Views
 
             RenderOptions.SetEdgeMode(this, EdgeMode.Unspecified);
             int x = (int) ActualWidth - 1;
-            double yMin = ActualHeight-1;
+            double yMin = ActualHeight - 1;
             double yRange = yMin - 3;
             DesiredNetworkBufferSize = x;
 
@@ -151,7 +151,7 @@ namespace NetworkToolbar.Views
             double[] up = new double[Math.Min(x, frames.Length)];
             double[] down = new double[Math.Min(x, frames.Length)];
             double range = 0;
- 
+
             if(RenderMode == RenderingMode.Average && up.Length > c_rollingAveragingRange)
             {
                 int i = 0;
@@ -163,8 +163,8 @@ namespace NetworkToolbar.Views
 
                     upStack.Push(frame.Upload);
                     downStack.Push(frame.Download);
-                    up[i] = Math.Max(frame.Upload, upStack.Average());
-                    down[i] = Math.Max(frame.Download, downStack.Average());
+                    up[i] = Math.Max(frame.Upload, CalculateRollingAverage(upStack));
+                    down[i] = Math.Max(frame.Download, CalculateRollingAverage(downStack));
 
                     range = Math.Max(up[i], Math.Max(down[i], range));
                     i++;
@@ -189,7 +189,7 @@ namespace NetworkToolbar.Views
                 }
             }
             else if(RenderMode == RenderingMode.Smart && up.Length > c_movingAveragingRange && up.Length > c_rollingAveragingRange)
-            {   // Combine both average and moving average
+            { // Combine both average and moving average
                 int i = 0;
                 DropOutStack<double> upStack = new DropOutStack<double>(Math.Max(c_movingAveragingRange, c_rollingAveragingRange));
                 DropOutStack<double> downStack = new DropOutStack<double>(Math.Max(c_movingAveragingRange, c_rollingAveragingRange));
@@ -199,7 +199,7 @@ namespace NetworkToolbar.Views
 
                     upStack.Push(frame.Upload);
                     downStack.Push(frame.Download);
-                    
+
                     up[i] = Math.Max(CalculateRollingAverage(upStack), CalculateMovingAverage(upStack));
                     down[i] = Math.Max(CalculateRollingAverage(downStack), CalculateMovingAverage(downStack));
 
@@ -240,7 +240,7 @@ namespace NetworkToolbar.Views
                 }
             }
 
-            for (int i = 0; i < up.Length-1; i++)
+            for (int i = 0; i < up.Length - 1; i++)
             {
                 double barRange = down[i] / range;
                 drawingContext.DrawLine(m_downloadPen, new Point(x, yMin), new Point(x, yMin - (yRange * barRange)));
