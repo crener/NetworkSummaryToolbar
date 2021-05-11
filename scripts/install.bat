@@ -20,4 +20,3 @@ if defined %PROGRAMFILES(x86)% (
 ) else (
     %SystemRoot%\Microsoft.NET\Framework\v4.0.30319\regasm.exe /nologo /codebase "NetworkToolbarDeskBand.dll"
 )
-pause
